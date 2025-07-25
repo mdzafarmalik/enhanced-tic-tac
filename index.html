@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: #2e2e2e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+
+    .game-container {
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      text-align: center;
+      width: fit-content;
+      max-width: 95%;
+      box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+    }
+
+    h1 {
+      font-size: 2rem;
+      color: #0f0;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0;
+      position: relative;
+      animation: flicker 1.5s infinite alternate;
+      margin-bottom: 20px;
+    }
+
+    @keyframes flicker {
+      0% { opacity: 1; text-shadow: 0 0 5px #0f0; }
+      50% { opacity: 0.8; text-shadow: 0 0 15px #0f0, 0 0 25px #0f0; }
+      100% { opacity: 1; text-shadow: 0 0 10px #0f0, 0 0 20px #0f0, 0 0 30px #0f0; }
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 100px);
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+      padding: 20px;
+      border: 2px solid #0f0;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #0f0, 0 0 40px #0f0 inset;
+      background-color: #000;
+    }
+
+    .index {
+      width: 100px;
+      height: 100px;
+      background-color: #111;
+      font-size: 2rem;
+      color: #0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #0f0;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #0f0;
+      transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    }
+
+    .index:hover {
+      background-color: #222;
+      box-shadow: 0 0 20px #0f0, 0 0 30px #0f0;
+      animation: glitch 0.3s infinite;
+    }
+
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-1px, 1px); }
+      40% { transform: translate(1px, -1px); }
+      60% { transform: translate(-1px, -1px); }
+      80% { transform: translate(1px, 1px); }
+      100% { transform: translate(0); }
+    }
+
+    .winning {
+      background-color: #0f0 !important;
+      color: #000 !important;
+      font-weight: bold;
+      box-shadow: 0 0 30px #0f0, 0 0 50px #0f0;
+      transform: scale(1.1);
+    }
+
+    .winning::after {
+      content: '';
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border: 2px solid #0f0;
+      box-shadow: 0 0 30px #0f0;
+      animation: flash 0.5s alternate infinite;
+      pointer-events: none;
+    }
+
+    @keyframes flash {
+      0% { opacity: 1; }
+      50% { opacity: 0.3; }
+      100% { opacity: 1; }
+    }
+
+    .scoreboard {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      color: #fff;
+      animation: flicker 1.5s infinite alternate;
+      text-shadow: 0 0 5px #0f0, 0 0 10px #0f0, 0 0 20px #0f0;
+      font-size: 1rem;
+
+    }
+
+    .score {
+      background-color: #333;
+      padding: 10px 15px;
+      border-radius: 8px;
+      min-width: 90px;
+      border: 1px solid #0f0;
+      box-shadow: 0 0 10px #0f0 inset;
+      transition: transform 0.3s ease;
+    }
+
+    .score:hover {
+      transform: scale(1.05);
+    }
+
+    .reset-btn {
+      background-color: transparent;
+      border: 2px solid #0f0;
+      color: #0f0;
+      font-weight: bold;
+      padding: 10px 25px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-shadow: 0 0 10px #0f0;
+      box-shadow: 0 0 15px #0f0;
+      transition: all 0.3s;
+      margin-top: 10px;
+      margin-right: 20px;
+    }
+
+    .reset-btn:hover {
+      background-color: #0f0;
+      color: #000;
+      box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+    }
+    .newb{
+      background-color: transparent;
+      border: 2px solid #0f0;
+      color: #0f0;
+      font-weight: bold;
+      padding: 10px 25px;
+      font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-shadow: 0 0 10px #0f0;
+      box-shadow: 0 0 15px #0f0;
+      transition: all 0.3s;
+      margin-top: 10px;
+
+    }
+    .newb:hover {
+      background-color: #0f0;
+      color: #000;
+      box-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+    }
+
+    .message {
+      color: #0f0;
+      font-weight: bold;
+      font-size: 2rem;
+      margin-top: 10px;
+      text-shadow: 0 0 10px #0f0, 0 0 20px #0f0;
+    }
+
+    @media (max-width: 500px) {
+      .grid {
+        grid-template-columns: repeat(3, 80px);
+        gap: 8px;
+      }
+
+      .index {
+        width: 80px;
+        height: 80px;
+        font-size: 1.5rem;
+      }
+      
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Tic Tac Toe</h1>
+    <div class="message"></div>
+
+    <div class="scoreboard">
+      <div class="score">X Wins: <span id="x-score">0</span></div>
+      <div class="score">O Wins: <span id="o-score">0</span></div>
+      <div class="score">Draws: <span id="draw-score">0</span></div>
+    </div>
+    <div class="grid">
+      <div class="index" data-index="0"></div>
+      <div class="index" data-index="1"></div>
+      <div class="index" data-index="2"></div>
+      <div class="index" data-index="3"></div>
+      <div class="index" data-index="4"></div>
+      <div class="index" data-index="5"></div>
+      <div class="index" data-index="6"></div>
+      <div class="index" data-index="7"></div>
+      <div class="index" data-index="8"></div>
+    </div>
+    <div class="button-container">
+        <button class="reset-btn">Reset</button>
+        <button class="newb">New Game</button>
+    </div>
+
+  <!-- Sound effects -->
+  <audio id="click-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_660934157f.mp3?filename=click-124467.mp3" preload="auto"></audio>
+  <audio id="win-sound" src="https://cdn.pixabay.com/download/audio/2021/09/06/audio_2b8b61ccdf.mp3?filename=success-1-6297.mp3" preload="auto"></audio>
+
+<script>
+const grid = document.querySelector('.grid');
+const resetBtn = document.querySelector('.reset-btn');
+const newBtn = document.querySelector('.newb');
+const tiles = document.querySelectorAll('.index');
+// const xScoreDisplay = document.querySelector('#x-score');
+
+// const oScoreDisplay = document.querySelector('#o-score');
+// const drawScoreDisplay = document.querySelector('#draw-score');
+const xScoreDisplay = document.getElementById('x-score');
+const oScoreDisplay = document.getElementById('o-score');
+const drawScoreDisplay = document.getElementById('draw-score');
+
+const winnerDisplay = document.querySelector('.message');
+const clickSound = document.getElementById('click-sound');
+const winSound = document.getElementById('win-sound');
+
+let currentPlayer = 'X';
+let gameActive = true;
+let gameBoard = ['', '', '', '', '', '', '', '', ''];
+let xScore = 0;
+let oScore = 0;
+let drawScore = 0;
+
+const winningConditions = [
+  [0,1,2], [3,4,5], [6,7,8],
+  [0,3,6], [1,4,7], [2,5,8],
+  [0,4,8], [2,4,6]
+];
+
+// for update score
+ 
+  function updateScores() {
+    // console.log(xScore);
+  xScoreDisplay.textContent = xScore;
+  oScoreDisplay.textContent = oScore;
+  // console.log(oScore);
+  drawScoreDisplay.textContent = drawScore;
+}
+
+// for sound effect
+
+function playSound(sound) {
+  try {
+    sound.currentTime = 0;
+    // sound.play();
+  } catch(e) {
+    console.log('Audio error:', e);
+  }
+}
+
+function makeMove(index, player) {
+  if (gameBoard[index] === '' && gameActive) {
+    gameBoard[index] = player;
+    tiles[index].textContent = player;
+    tiles[index].classList.add('placed');
+    playSound(clickSound);
+    checkResult();
+    currentPlayer = player === 'X' ? 'O' : 'X';
+  }
+}
+
+tiles.forEach((tile, index) => {
+  tile.addEventListener('click', () => {
+    if (gameBoard[index] === '' && gameActive && currentPlayer === 'X') {
+      makeMove(index, 'X');
+      setTimeout(() => {
+        if (gameActive) {
+          const aiMove = getBestMove();
+          makeMove(aiMove, 'O');
+        }
+      }, 400);
+    }
+  });
+});
+// function of reset button 
+resetBtn.addEventListener('click', () => {
+  gameBoard = ['', '', '', '', '', '', '', '', ''];
+  tiles.forEach(tile => {
+    tile.textContent = '';
+    xScore=0;
+    drawScore=0;
+    oScore=0;
+    tile.classList.remove('winning', 'placed');
+  });
+  currentPlayer = 'X';
+  gameActive = true;
+  winnerDisplay.textContent = '';
+  drawScoreDisplay.textContent='';
+  xScoreDisplay.textContent='';
+  oScoreDisplay.textContent='';
+});
+newBtn.addEventListener('click',() => {
+  gameBoard = ['', '', '', '', '', '', '', '', ''];
+  tiles.forEach(tile => {
+    tile.textContent = '';
+    tile.classList.remove('winning', 'placed');
+  });
+  currentPlayer="X";
+  gameActive = true;
+  winnerDisplay.textContent='';
+
+});
+
+// for game move
+function getBestMove() {
+  for (let combo of winningConditions) {
+    const [a,b,c] = combo;
+    const values = [gameBoard[a], gameBoard[b], gameBoard[c]];
+    if (values.filter(v => v === 'O').length === 2 && values.includes('')) {
+      return [a,b,c][values.indexOf('')];
+    }
+  }
+  for (let combo of winningConditions) {
+    const [a,b,c] = combo;
+    const values = [gameBoard[a], gameBoard[b], gameBoard[c]];
+    if (values.filter(v => v === 'X').length === 2 && values.includes('')) {
+      return [a,b,c][values.indexOf('')];
+    }
+  }
+  if (gameBoard[4] === '') return 4;
+  const empty = gameBoard.map((v,i) => v === '' ? i : null).filter(v => v !== null);
+  return empty[Math.floor(Math.random() * empty.length)];
+}
+// for winning condition of this game.
+function checkResult() {
+  for (let i = 0; i < winningConditions.length; i++) {
+    const [a, b, c] = winningConditions[i];
+    if (gameBoard[a] === gameBoard[b] && gameBoard[a] === gameBoard[c] && gameBoard[a] !== '') {
+      tiles[a].classList.add('winning');
+      tiles[b].classList.add('winning');
+      tiles[c].classList.add('winning');
+      gameActive = false;
+      playSound(winSound);
+
+      if (gameBoard[a] === 'X') xScore++;
+      else if (gameBoard[a] === 'O') oScore++;
+      updateScores();
+      setTimeout(() => {
+        winnerDisplay.innerHTML = `Player ${gameBoard[a]} Wins!`;
+      }, 300);
+      return;
+    }
+  }
+// for draw condition of this game
+  if (!gameBoard.includes('')) {
+    gameActive = false;
+    drawScore++;
+    // console.log(drawScore);
+    updateScores();
+    setTimeout(() => {
+      winnerDisplay.innerHTML = `Draw!`;
+    }, 200);
+  }
+}
+</script>
+</body>
+</html>
